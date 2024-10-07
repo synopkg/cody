@@ -113,6 +113,15 @@ export async function start(
     context: vscode.ExtensionContext,
     platform: PlatformContext
 ): Promise<vscode.Disposable> {
+    const disposables: vscode.Disposable[] = []
+
+    // Important! This needs to happen before we resolve the config
+    // Otherwise some eager beavers might start making network requests
+    const proxyAgent = await platform.initializeNetworkAgent?.()
+    if (proxyAgent) {
+        disposables.push(proxyAgent)
+    }
+
     const isExtensionModeDevOrTest =
         context.extensionMode === vscode.ExtensionMode.Development ||
         context.extensionMode === vscode.ExtensionMode.Test
@@ -128,15 +137,16 @@ export async function start(
 
     setLogger({ logDebug, logError })
 
-    const disposables: vscode.Disposable[] = []
-
     setClientCapabilitiesFromConfiguration(getConfiguration())
 
     setResolvedConfigurationObservable(
         combineLatest(
             fromVSCodeEvent(vscode.workspace.onDidChangeConfiguration).pipe(
                 filter(
-                    event => event.affectsConfiguration('cody') || event.affectsConfiguration('openctx')
+                    event =>
+                        event.affectsConfiguration('cody') ||
+                        event.affectsConfiguration('openctx') ||
+                        event.affectsConfiguration('http')
                 ),
                 startWith(undefined),
                 map(() => getConfiguration()),
