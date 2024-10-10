@@ -413,6 +413,7 @@ export interface Prompt {
     }
     description?: string
     draft: boolean
+    autoSubmit?: boolean
     definition: {
         text: string
     }
