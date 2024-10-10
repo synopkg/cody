@@ -7,7 +7,14 @@ import {
     createMessageAPIForWebview,
 } from '@sourcegraph/cody-shared'
 import { Observable } from 'observable-fns'
-import { type FunctionComponent, type ReactNode, createContext, useContext, useMemo } from 'react'
+import {
+    type FunctionComponent,
+    type ReactNode,
+    createContext,
+    useContext,
+    useEffect,
+    useMemo,
+} from 'react'
 
 const context = createContext<WebviewToExtensionAPI | undefined>(undefined)
 
@@ -20,6 +27,12 @@ export const ExtensionAPIProviderFromVSCodeAPI: FunctionComponent<{
         () => createExtensionAPI(createMessageAPIForWebview(vscodeAPI), staticInitialContext),
         [vscodeAPI, staticInitialContext]
     )
+    useEffect(() => {
+        return () => {
+            // TODO: Rest of the things.
+            extensionAPI.chatModels().dispose()
+        }
+    }, [extensionAPI])
     return <context.Provider value={extensionAPI}>{children}</context.Provider>
 }
 

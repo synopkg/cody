@@ -10,6 +10,8 @@ import type { Model } from '../../models/model'
 import type { FetchHighlightFileParameters, Prompt } from '../../sourcegraph-api/graphql/client'
 import { type createMessageAPIForWebview, proxyExtensionAPI } from './rpc'
 
+type DisposableObservable<T> = Observable<T> & { dispose(): void }
+
 export interface WebviewToExtensionAPI {
     /**
      * Get the data to display in the @-mention menu for the given query.
@@ -36,7 +38,7 @@ export interface WebviewToExtensionAPI {
     /**
      * Observe the list of available chat models.
      */
-    chatModels(): Observable<Model[]>
+    chatModels(): DisposableObservable<Model[]>
 
     highlights(query: FetchHighlightFileParameters): Observable<string[][]>
 
