@@ -26,6 +26,8 @@ const INITIAL: UseObservableResult<any> = {
     error: null,
 }
 
+const pigs: { [key: string]: number } = {}
+
 /**
  * React hook to return the latest value and complete/error state from an Observable.
  *
@@ -47,6 +49,16 @@ export function useObservable<T>(
     const lastPreserveValueKey = useRef(options?.preserveValueKey ?? undefined)
 
     useEffect(() => {
+        const here = new Error().stack || '???'
+        pigs[here] = (pigs[here] ?? 0) + 1
+        const [sum, max, maxCount] = Object.entries(pigs).reduce(
+            ([sum, max, maxCount], [name, count]) => {
+                return [sum + count, count > maxCount ? name : max, Math.max(count, maxCount)]
+            },
+            [0, 'none', 0]
+        )
+        console.log('useObservable pigs:', sum, maxCount / sum, max)
+
         let isMounted = true
 
         if (lastPreserveValueKey.current !== options?.preserveValueKey) {
@@ -73,6 +85,7 @@ export function useObservable<T>(
         })
 
         return () => {
+            pigs[here] = (pigs[here] ?? 1) - 1
             isMounted = false
             subscription.unsubscribe()
         }

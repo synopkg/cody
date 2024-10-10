@@ -16,7 +16,7 @@ export default defineProjectWithDefaults(__dirname, {
         target: 'esnext',
         assetsDir: '.',
         minify: false,
-        sourcemap: false,
+        sourcemap: true,
         reportCompressedSize: false,
         rollupOptions: {
             external: ['node:https'],

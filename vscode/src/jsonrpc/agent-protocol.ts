@@ -180,6 +180,7 @@ export type ClientRequests = {
 
     // High-level API to allow the agent to clean up resources related to a
     // webview ID (from chat/new).
+    // This is a test... this is only a test.
     'webview/didDispose': [{ id: string }, null]
 
     // Implements the VSCode Webview View API. Called when the client has

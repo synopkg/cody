@@ -182,6 +182,8 @@ export function createMessageAPIForWebview<
     }
 }
 
+const pigs: { [key: string]: number } = {}
+
 /**
  * Send a message and return an Observable that will emit the responses.
  */
@@ -192,6 +194,22 @@ function callExtensionAPI<T>(
 ): Observable<T> {
     return new Observable<T>(observer => {
         const streamId = generateStreamId()
+
+        pigs[method] = (pigs[method] || 0) + 1
+        const [sum, max, maxCount] = Object.entries(pigs).reduce(
+            ([sum, max, maxCount], [name, count]) => {
+                return [sum + count, count > maxCount ? name : max, Math.max(count, maxCount)]
+            },
+            [0, 'none', 0]
+        )
+        console.log('rpc pigs:', sum, maxCount / sum, max)
+        console.log(
+            'rpc pigs farm:',
+            Object.entries(pigs)
+                .sort((a, b) => b[1] - a[1])
+                .map(p => `${p[1]}: ${p[0]}`)
+                .join('\n')
+        )
 
         // Stream state
         let finished = false
@@ -227,6 +245,7 @@ function callExtensionAPI<T>(
                 logRPCMessage(`W->X: aborting stream ${streamId}`)
                 messageAPI.postMessage({ streamIdToAbort: streamId })
             }
+            pigs[method] = (pigs[method] || 1) - 1
         }
     })
 }
@@ -338,7 +357,7 @@ export function addMessageListenersForExtensionAPI(
     }
 }
 
-const LOG_RPC_MESSAGES = process.env.CODY_LOG_WEBVIEW_RPC_MESSAGES === 'true'
+const LOG_RPC_MESSAGES = true // process.env.CODY_LOG_WEBVIEW_RPC_MESSAGES === 'true'
 
 /**
  * Write the RPC message to the output log.
@@ -346,6 +365,6 @@ const LOG_RPC_MESSAGES = process.env.CODY_LOG_WEBVIEW_RPC_MESSAGES === 'true'
  */
 function logRPCMessage(msg: string, ...args: any[]) {
     if (LOG_RPC_MESSAGES) {
-        logDebug('[RPC]', msg, ...args)
+        logDebug('[RPC]', msg, JSON.stringify(args))
     }
 }
