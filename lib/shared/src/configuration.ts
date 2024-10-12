@@ -41,8 +41,8 @@ interface RawClientConfiguration {
 
     serverEndpoint?: string
     customHeaders?: Record<string, string>
-    chatPreInstruction: PromptString
-    editPreInstruction: PromptString
+    chatPreInstruction?: PromptString
+    editPreInstruction?: PromptString
     codeActions: boolean
     commandHints: boolean
     commandCodeLenses: boolean
@@ -177,16 +177,6 @@ export const AUTOCOMPLETE_PROVIDER_ID = {
      * @deprecated use `openai` instead
      */
     'azure-openai': 'azure-openai',
-
-    /**
-     * Cody talking to customer's custom proxy service.
-     *
-     * TODO(slimsag): self-hosted models: deprecate and remove this
-     * once customers are upgraded to non-experimental version.
-     *
-     * @deprecated use `openaicompatible` instead
-     */
-    'experimental-openaicompatible': 'experimental-openaicompatible',
 
     /**
      * This refers to either Anthropic models re-sold by AWS,
@@ -372,12 +362,7 @@ export interface ExperimentalFireworksConfig {
     url: string
     token: string
     model: string
-    parameters?: {
-        temperature?: number
-        top_k?: number
-        top_p?: number
-        stop?: string[]
-    }
+    parameters?: FireworksCodeCompletionParams
 }
 
 /**
@@ -412,4 +397,18 @@ export interface GroqCompletionOptions {
      *A stop sequence is a predefined or user-specified text string that signals an AI to stop generating content, ensuring its responses remain focused and concise.
      */
     stop?: string[]
+}
+
+export interface FireworksCodeCompletionParams {
+    model: string | undefined
+    prompt: string
+    max_tokens: number
+    echo: boolean
+    temperature: number | undefined
+    top_p: number | undefined
+    top_k: number | undefined
+    stop: string[]
+    stream: boolean
+    languageId: string
+    user: string | null
 }

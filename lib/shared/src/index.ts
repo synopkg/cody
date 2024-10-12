@@ -170,7 +170,7 @@ export {
     setDisplayPathEnvInfo,
     type DisplayPathEnvInfo,
 } from './editor/displayPath'
-export { hydrateAfterPostMessage } from './editor/hydrateAfterPostMessage'
+export { forceHydration, hydrateAfterPostMessage } from './editor/hydrateAfterPostMessage'
 export * from './editor/utils'
 export {
     FeatureFlag,
@@ -188,6 +188,7 @@ export {
     type SerializedCodeCompletionsParams,
     type CompletionResponseGenerator,
     type CompletionResponseWithMetaData,
+    type CodeCompletionProviderOptions,
 } from './inferenceClient/misc'
 export type { Result } from './local-context'
 export { logDebug, logError, setLogger } from './logger'

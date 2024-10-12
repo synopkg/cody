@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 
 import { authStatus, resolvedConfig, subscriptionDisposable } from '@sourcegraph/cody-shared'
-import { outputChannel } from '../log'
+import { outputChannelManager } from '../output-channel-logger'
 
 /**
  * A development helper that runs on activation to make the edit-debug loop easier.
@@ -21,7 +21,7 @@ export function onActivationDevelopmentHelpers(): void {
     }
 
     if (settings.get('openOutputConsole')) {
-        outputChannel.show()
+        outputChannelManager.defaultOutputChannel.show()
     }
 }
 
