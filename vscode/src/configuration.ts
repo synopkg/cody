@@ -7,7 +7,6 @@ import {
     type PickResolvedConfiguration,
     PromptString,
     cenv,
-    ps,
     setStaticResolvedConfigurationValue,
 } from '@sourcegraph/cody-shared'
 
